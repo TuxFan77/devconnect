@@ -1,4 +1,5 @@
 {
   "mongoURI": "mongodb+srv://briancross:J1vkHD5XtBcHTmgk@devconnect.uejau.mongodb.net/<dbname>?retryWrites=true&w=majority",
-  "jwtSecret": "temporarySecret"
+  "jwtSecret": "temporarySecret",
+  "invalidCredentials": "Username and / or password is invalid"
 }
