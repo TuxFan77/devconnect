@@ -68,7 +68,7 @@ router.post(
     if (status) profileFields.status = status;
     if (githubusername) profileFields.githubusername = githubusername;
     if (skills)
-      profileFields.skills = skills.split(",").map(skill => skill.trim());
+      profileFields.skills = skills.split(",").map((skill) => skill.trim());
 
     // Build social object
     profileFields.social = {};
@@ -156,6 +156,51 @@ router.delete("/", auth, async (req, res) => {
 // @route   PUT api/profile/experience
 // @desc    Update the profile experience array
 // @access  Private
-router.put("/experience", auth, async (req, res) => {});
+router.put(
+  "/experience",
+  [
+    auth,
+    [
+      body("title", "Title is required").notEmpty(),
+      body("company", "Company is required").notEmpty(),
+      body("from", "From date is required").notEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    const {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+
+    const newExperience = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(newExperience);
+      await profile.save();
+      res.json(profile);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json("Server error");
+    }
+  }
+);
 
 module.exports = router;
