@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const User = require("../../models/User");
-const config = require("config");
 
 // @route   GET api/auth
 // @desc    Test route
@@ -43,7 +42,7 @@ router.post(
       if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: config.get("invalidCredentials") }] });
+          .json({ errors: [{ msg: "Invalid user name or password" }] });
       }
 
       const passwordMatches = await bcrypt.compare(password, user.password);
@@ -51,7 +50,7 @@ router.post(
       if (!passwordMatches) {
         return res
           .status(400)
-          .json({ errors: [{ msg: config.get("invalidCredentials") }] });
+          .json({ errors: [{ msg: "Invalid user name or password" }] });
       }
 
       const payload = {
@@ -62,7 +61,7 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        process.env.JWT_SECRET,
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
