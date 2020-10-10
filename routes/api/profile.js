@@ -29,7 +29,7 @@ router.get("/", auth, async (req, res) => {
 // @desc    Create or update a user profile
 // @access  Private
 router.post(
-  "/me",
+  "/",
   [
     auth,
     [
@@ -68,7 +68,7 @@ router.post(
     if (status) profileFields.status = status;
     if (githubusername) profileFields.githubusername = githubusername;
     if (skills)
-      profileFields.skills = skills.split(",").map((skill) => skill.trim());
+      profileFields.skills = skills.split(",").map(skill => skill.trim());
 
     // Build social object
     profileFields.social = {};
@@ -202,5 +202,27 @@ router.put(
     }
   }
 );
+
+// @route   DELETE api/profile/experience/:exp_id
+// @desc    Deletes experience from profile
+// @access  Private
+router.delete("/experience/:exp_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    const removeIndex = profile.experience
+      .map(item => item.id)
+      .indexOf(req.params.exp_id);
+
+    profile.experience.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Server error");
+  }
+});
 
 module.exports = router;
