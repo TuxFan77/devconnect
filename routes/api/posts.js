@@ -29,7 +29,9 @@ router.post(
         user: req.user.id,
       };
 
-      const post = await newPost.save();
+      const post = new Post(newPost);
+      post.save();
+
       res.send(post);
     } catch (err) {
       console.error(err);
