@@ -76,12 +76,12 @@ router.delete("/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
+    if (!post) return res.status(404).send({ msg: "Post not found" });
+
     if (req.user.id !== post.user.toHexString())
       return res.status(401).send({ msg: "Not authorized" });
 
-    if (!post) return res.status(404).send({ msg: "Post not found" });
-
-    res.send(post);
+    res.send(await post.remove());
   } catch (err) {
     console.error(err);
 
