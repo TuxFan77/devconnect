@@ -183,7 +183,9 @@ router.post(
 
       post.comments.unshift(comment);
 
-      res.send(await post.save());
+      await post.save();
+
+      res.send(post.comments);
     } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
