@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 const Register = () => {
   const initialFormData = {
@@ -29,21 +28,7 @@ const Register = () => {
 
     setFormData(initialFormData);
 
-    const newUser = {
-      name,
-      email,
-      password,
-    };
-
-    try {
-      const config = {
-        "Content-Type": "application/json",
-      };
-      const res = await axios.post("/api/users", newUser, config);
-      console.log(res.data);
-    } catch (err) {
-      console.error(err.response.data);
-    }
+    console.log("success");
   }
 
   return (
